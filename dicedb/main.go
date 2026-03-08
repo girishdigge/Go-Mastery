@@ -1,0 +1,21 @@
+package main
+
+import (
+	"flag"
+	"log"
+
+	"github.com/dicedb/dice/config"
+	"github.com/dicedb/dice/server"
+)
+
+func setupFlag() {
+	flag.StringVar(&config.Host, "host", "0.0.0.0", "host for the dice server")
+	flag.IntVar(&config.port, "port", 7379, "port for the dice server")
+	flag.Parse()
+}
+
+func main() {
+	setupFlag()
+	log.Println("rolling the dice 🎲")
+	server.RunSyncTCPServer()
+}
