@@ -1,11 +1,14 @@
-package main
+package render
 
 import (
 	"log"
 	"net/http"
+	"text/template"
 )
 
-func renderTemplate(w http.ResponseWriter, tmpl string) {
+var tmplCache = template.Must(template.ParseGlob("./templates/*.tmpl"))
+
+func RenderTemplate(w http.ResponseWriter, tmpl string) {
 
 	err := tmplCache.ExecuteTemplate(w, tmpl, nil)
 	if err != nil {
