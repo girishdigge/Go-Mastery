@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/girishdigge/hello-world/pkg/config"
+	"github.com/girishdigge/hello-world/pkg/models"
 )
 
 var app *config.AppConfig
@@ -17,7 +18,12 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func AddDefaultData(td *models.TemplateData) *models.TemplateData {
+
+	return td
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	//get the template cache from the app config
 	var tc map[string]*template.Template
 	if app.UseCache {
@@ -33,7 +39,8 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 
 	buf := new(bytes.Buffer)
-	err := t.Execute(buf, nil)
+	td = AddDefaultData(td)
+	err := t.Execute(buf, td)
 	if err != nil {
 		log.Println(err)
 	}
