@@ -6,24 +6,34 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/girishdigge/hello-world/pkg/config"
 )
 
-// var tmplCache = template.Must(template.ParseGlob("./templates/*.tmpl"))
+var app *config.AppConfig
+
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
 
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	//create template cache
-	tc, err := createTemplateCache()
-	if err != nil {
-		log.Fatal(err)
+	//get the template cache from the app config
+	var tc map[string]*template.Template
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
 	}
+
 	//get requested template from cache
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal(err)
+		log.Fatal("Could not get template from template cache")
 	}
 
 	buf := new(bytes.Buffer)
-	err = t.Execute(buf, nil)
+	err := t.Execute(buf, nil)
 	if err != nil {
 		log.Println(err)
 	}
@@ -34,7 +44,7 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 }
 
-func createTemplateCache() (map[string]*template.Template, error) {
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 	pages, err := filepath.Glob("./templates/*.page.tmpl")
 	if err != nil {
