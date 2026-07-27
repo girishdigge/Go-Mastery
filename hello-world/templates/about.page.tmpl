@@ -7,6 +7,14 @@
       <p>This is About page para</p>
 
       <p>This came from the template:{{index .StringMap "test"}}</p>
+      <p>
+        {{if ne (index .StringMap "remote_ip") ""}} Your remote IP address is
+        {{index .StringMap "remote_ip"}}
+        {{else}}
+        I don't have your ip yet, Visit <a href="/">Home page</a> so that i can
+        access your ip.
+        {{ end }}
+      </p>
     </div>
   </div>
 </div>
